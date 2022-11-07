@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shoping_app/screen/add_card.dart';
+import 'package:shoping_app/screen/provider/%20providerdata.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => DtataChange(),
+    )
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

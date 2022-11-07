@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoping_app/color.dart';
 import 'package:shoping_app/screen/customtext.dart';
+import 'package:shoping_app/screen/provider/%20providerdata.dart';
 
 import 'modelclass.dart';
 
@@ -15,6 +17,7 @@ class _MyCardState extends State<MyCard> {
   @override
   Widget build(BuildContext context) {
     final itemInfo = ItemData.itemList();
+    final dataChang = Provider.of<DtataChange>(context);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -86,9 +89,9 @@ class _MyCardState extends State<MyCard> {
                         ),
                         SizedBox(height: 8),
                         HeadingText(
-                          x == 0
+                          dataChang.x == 0
                               ? '\$ 199.00 (-\$4.00 Tax)'
-                              : '\$ ${x * total}.00 (-\$4.00 Tax)',
+                              : '\$ ${dataChang.x * dataChang.total}.00 (-\$4.00 Tax)',
                           fs: 12,
                           clr: Colors.black.withOpacity(.4),
                         ),
@@ -107,10 +110,7 @@ class _MyCardState extends State<MyCard> {
                                   child: FloatingActionButton(
                                     backgroundColor: iconBackground,
                                     onPressed: () {
-                                      if (x > 0) {
-                                        x--;
-                                      }
-                                      setState(() {});
+                                      dataChang.decriment();
                                     },
                                     child: Icon(
                                       Icons.remove,
@@ -121,7 +121,7 @@ class _MyCardState extends State<MyCard> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16),
-                                  child: HeadingText('$x'),
+                                  child: HeadingText(dataChang.x.toString()),
                                 ),
                                 SizedBox(
                                   height: 40,
@@ -129,8 +129,7 @@ class _MyCardState extends State<MyCard> {
                                   child: FloatingActionButton(
                                     backgroundColor: iconBackground,
                                     onPressed: () {
-                                      x++;
-                                      setState(() {});
+                                      dataChang.incriment();
                                     },
                                     child: Icon(
                                       Icons.add,
@@ -142,8 +141,7 @@ class _MyCardState extends State<MyCard> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                x = 0;
-                                setState(() {});
+                                dataChang.delete();
                               },
                               child: Container(
                                   height: 40,
@@ -239,7 +237,7 @@ class _MyCardState extends State<MyCard> {
                   clr: Colors.black.withOpacity(.4),
                 ),
                 HeadingText(
-                  '\$${x * total}.00',
+                  '\$${dataChang.x * dataChang.total}.00',
                   fs: 14,
                   clr: Colors.black.withOpacity(.4),
                 ),
@@ -271,7 +269,9 @@ class _MyCardState extends State<MyCard> {
                   clr: Colors.black.withOpacity(.4),
                 ),
                 HeadingText(
-                  x == 0 ? '\$0.00' : '\$${x * total + 10.toDouble()}0',
+                  dataChang.x == 0
+                      ? '\$0.00'
+                      : '\$${dataChang.x * dataChang.total + 10.toDouble()}0',
                   fs: 16,
                   fw: FontWeight.w800,
                   clr: Colors.black,
@@ -285,9 +285,14 @@ class _MyCardState extends State<MyCard> {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      content: HeadingText('\$${x * total + 10.toDouble()}0'),
-                    ),
+                    builder: (context) => dataChang.x == 0
+                        ? AlertDialog(
+                            content: HeadingText('Please Select an product'),
+                          )
+                        : AlertDialog(
+                            content: HeadingText(
+                                '\$${dataChang.x * dataChang.total + 10.toDouble()}0'),
+                          ),
                   );
                 },
                 child: Container(
@@ -299,9 +304,9 @@ class _MyCardState extends State<MyCard> {
                   width: double.infinity,
                   child: Center(
                       child: HeadingText(
-                    x == 0
+                    dataChang.x == 0
                         ? 'CHECKOUT'
-                        : 'CHECKOUT \$${x * total + 10.toDouble()}0',
+                        : 'CHECKOUT \$${dataChang.x * dataChang.total + 10.toDouble()}0',
                     clr: iconBackground,
                   )),
                 ),
@@ -312,7 +317,4 @@ class _MyCardState extends State<MyCard> {
       ),
     );
   }
-
-  int x = 0;
-  int total = 199;
 }
